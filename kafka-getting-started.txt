@@ -1,0 +1,36 @@
+# Run every time you login or update .bash_profile
+export KAFKA_HOME=/usr/hdp/2.5.0.0-1245/kafka
+PATH=$PATH:$KAFKA_HOME/bin
+
+# Create topics
+kafka-topics.sh --create \
+  --zookeeper nn01.mycluster.com:2181,nn02.mycluster.com:2181 \
+  --replication-factor 1 \
+  --partitions 1 \
+  --topic kafkapc
+
+# List all topics
+kafka-topics.sh --list \
+  --zookeeper nn01.mycluster.com:2181,nn02.mycluster.com:2181
+
+# List one topic
+kafka-topics.sh --list \
+  --zookeeper nn01.mycluster.com:2181,nn02.mycluster.com:2181 \
+  --topic kafkapc
+
+kafka-topics.sh --delete \
+  --zookeeper nn01.mycluster.com:2181,nn02.mycluster.com:2181 \
+  --topic kafkapc
+
+# Command to produce messages, start typing after running this kakfa-console-producer command
+# The messages will be stored in topic kafkapc (logs.dir) on the host where brokers are running
+kafka-console-producer.sh \
+  --broker-list nn02.mycluster.com:6667 \
+  --topic kafkapc
+
+# Open another shell and then run kafka-console-consumer command to see streaming messages
+kafka-console-consumer.sh \
+  --bootstrap-server nn02.itversity.com:6667 \
+  --zookeeper nn01.mycluster.com:2181,nn02.mycluster.com:2181 \
+  --topic kafkapc \
+  --from-beginning
